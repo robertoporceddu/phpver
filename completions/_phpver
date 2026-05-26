@@ -1,0 +1,89 @@
+#compdef phpver
+# Zsh completion for phpver
+
+_phpver_versions() {
+  local -a versions
+  versions=(${~$(ls "$HOME/.phpver/versions" 2>/dev/null)})
+  _describe 'php version' versions
+}
+
+_phpver_pecl_extensions() {
+  local -a exts
+  exts=(imagick redis memcached memcache xdebug)
+  _describe 'pecl extension' exts
+}
+
+_phpver() {
+  local -a commands
+  commands=(
+    'install:Install PHP via Homebrew'
+    'uninstall:Remove phpver link'
+    'use:Activate a version'
+    'list:List versions'
+    'current:Show active PHP'
+    'which:Show php path'
+    'ext:PHP extensions (list, install, uninstall, sync)'
+    'version:Show phpver version'
+    'help:Show help'
+  )
+
+  local -a ext_commands
+  ext_commands=(
+    'list:List loaded extensions'
+    'install:Install PECL extension'
+    'uninstall:Uninstall PECL extension'
+    'sync:Install from .php-extensions'
+    'help:Extension help'
+  )
+
+  case $words[2] in
+    install|uninstall|un|i)
+      _phpver_versions
+      ;;
+    use|u)
+      if (( CURRENT > 2 )); then
+        _arguments \
+          '(-g --global)'{-g,--global}'[set global default]' \
+          '(-p --project)'{-p,--project}'[write .php-version in current directory]'
+      else
+        _phpver_versions
+      fi
+      ;;
+    ext)
+      case $words[3] in
+        list|ls)
+          if (( CURRENT == 4 )); then
+            _phpver_versions
+          fi
+          ;;
+        sync)
+          if (( CURRENT == 4 )); then
+            _phpver_versions
+          fi
+          ;;
+        install|i|uninstall|un)
+          if (( CURRENT == 4 )); then
+            _phpver_pecl_extensions
+          elif (( CURRENT == 5 )); then
+            _arguments \
+              '(-p --project)'{-p,--project}'[update .php-extensions in current directory]' \
+              '1:version:_phpver_versions'
+          elif (( CURRENT > 5 )); then
+            _arguments \
+              '(-p --project)'{-p,--project}'[update .php-extensions in current directory]'
+          fi
+          ;;
+        *)
+          if (( CURRENT == 3 )); then
+            _describe 'ext command' ext_commands
+          fi
+          ;;
+      esac
+      ;;
+    *)
+      _describe 'command' commands
+      ;;
+  esac
+}
+
+_phpver "$@"

@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Always run phpver logic in bash (zsh sources lib/phpver.sh for hooks only).
+# Do not use set -e: sourcing lib runs auto_activate/sync which must not abort the CLI.
+set -uo pipefail
+
+PHPVER_BIN_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PHPVER_ROOT="$(cd "$PHPVER_BIN_DIR/.." && pwd)"
+export PHPVER_ROOT
+# Hooks (cd / .php-version) run when lib is sourced from zsh; skip for one-shot CLI commands.
+export PHPVER_NO_AUTO=1
+
+# shellcheck source=../lib/phpver.sh
+source "$PHPVER_ROOT/lib/phpver.sh"
+
+phpver "$@" || exit $?
