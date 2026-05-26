@@ -2,7 +2,7 @@
 # phpver — PHP version manager for macOS (Homebrew bottles, no compile).
 # Sourced from zsh (.zshrc) and run via bash (bin/phpver); avoid bash-only regex captures.
 
-PHPVER_VERSION="0.2.0"
+PHPVER_VERSION="0.2.1"
 PHPVER_ROOT="${PHPVER_ROOT:-$HOME/.phpver}"
 PHPVER_VERSIONS_DIR="$PHPVER_ROOT/versions"
 PHPVER_DEFAULT_FILE="$PHPVER_ROOT/default"
@@ -409,8 +409,35 @@ phpver_uninstall() {
   phpver__info "To remove it: brew uninstall $formula"
 }
 
+# Activate a version on PATH. Prints only when the version actually changes.
+# source: "project" | "global" | "" (manual phpver use)
+phpver__activate() {
+  local ver="$1"
+  local source="${2:-}"
+  local bin_path msg
+
+  bin_path="$(phpver__path_for_version "$ver")" || {
+    phpver__die "version $ver is not installed (phpver install $ver)"
+    return 1
+  }
+
+  if [[ "${PHPVER_ACTIVE_VERSION:-}" == "$ver" && "${PHPVER_ACTIVE_BIN:-}" == "$bin_path" ]]; then
+    return 0
+  fi
+
+  phpver__prepend_path "$bin_path"
+  PHPVER_ACTIVE_VERSION="$ver"
+
+  msg="$(phpver__php_version_string "$bin_path/php")"
+  case "$source" in
+    project) phpver__info "using PHP $msg ($ver) — from .php-version" ;;
+    global) phpver__info "using PHP $msg ($ver) — global default" ;;
+    *) phpver__info "using PHP $msg ($ver)" ;;
+  esac
+}
+
 phpver_use() {
-  local ver global=false project=false bin_path
+  local ver global=false project=false
   while [[ $# -gt 0 ]]; do
     case "$1" in
       -g | --global) global=true; shift ;;
@@ -432,12 +459,8 @@ phpver_use() {
     fi
   fi
 
-  bin_path="$(phpver__path_for_version "$ver")" || {
-    phpver__die "version $ver is not installed (phpver install $ver)"
-    return 1
-  }
-
-  phpver__prepend_path "$bin_path"
+  ver="$(phpver__normalize_version "$ver")" || return 1
+  phpver__activate "$ver" "" || return 1
 
   if $project; then
     phpver__write_project_version "$ver"
@@ -448,8 +471,6 @@ phpver_use() {
     echo "$ver" >"$PHPVER_DEFAULT_FILE"
     phpver__info "global default set to $ver"
   fi
-
-  phpver__info "using PHP $(phpver__php_version_string "$bin_path/php") ($ver)"
 }
 
 phpver_list() {
@@ -1038,14 +1059,22 @@ phpver() {
   return "$rc"
 }
 
-# Auto-activate global default, then .php-version in directory tree (zsh on source / cd only)
+# Auto-activate: .php-version in tree overrides global default (zsh on source / cd only).
+# Version message is printed only when the active version changes.
 phpver__auto_activate() {
-  local from_file=""
+  local from_file="" ver="" source=""
+
   from_file="$(phpver__read_php_version_file 2>/dev/null)" || true
   if [[ -n "$from_file" ]]; then
-    phpver_use "$from_file" 2>/dev/null || true
+    ver="$(phpver__normalize_version "$from_file" 2>/dev/null)" || ver=""
+    source="project"
   elif [[ -f "$PHPVER_DEFAULT_FILE" ]]; then
-    phpver_use "$(<"$PHPVER_DEFAULT_FILE")" 2>/dev/null || true
+    ver="$(phpver__normalize_version "$(<"$PHPVER_DEFAULT_FILE")" 2>/dev/null)" || ver=""
+    source="global"
+  fi
+
+  if [[ -n "$ver" ]]; then
+    phpver__activate "$ver" "$source" 2>/dev/null || true
   fi
 
   if [[ "${PHPVER_AUTO_EXT_SYNC}" != "0" ]]; then

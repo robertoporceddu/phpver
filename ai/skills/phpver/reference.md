@@ -81,5 +81,6 @@ export PECL_PHPBIN="$(brew --prefix php@8.4)/bin/php"
 | 0.1.8 | No auto-activate on CLI; project-scoped `.php-extensions`; skip loaded PECL |
 | 0.1.9 | Fix version detection when PHP prints startup warnings |
 | 0.1.10 | `ext cleanup`; `get_loaded_extensions()` for `ext list`; ini cleanup on uninstall |
+| 0.2.1 | Auto-activate prints version only on switch; restores global when leaving `.php-version` tree |
 
 Check installed: `phpver version` or `head -5 ~/.phpver/lib/phpver.sh | grep PHPVER_VERSION`.

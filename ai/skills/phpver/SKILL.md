@@ -77,7 +77,7 @@ Versions normalize to `MAJOR.MINOR` (`8.4.21` → `8.4`).
 | Project file | `phpver use 8.4 -p` → writes `.php-version` next to project root logic |
 | List / current | `phpver list`, `phpver current`, `phpver which` |
 
-**`.php-version`:** one line, e.g. `8.4`. On `cd`, zsh hook activates it (overrides global default).
+**`.php-version`:** one line, e.g. `8.4`. On `cd`, zsh hook activates it (overrides global default). Leaving the project tree restores the global default; version messages print only when the active version changes.
 
 **Agent rule:** run `phpver` from the **project root** (where `.php-version` lives) when using `-p` or `ext sync`.
 

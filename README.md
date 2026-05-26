@@ -108,7 +108,7 @@ Or create it manually:
 echo "8.4" > .php-version
 ```
 
-**Behavior:** with phpver loaded, walking up the directory tree picks the nearest `.php-version`; it overrides the global default. Commit `.php-version` so the team shares the same major/minor.
+**Behavior:** with phpver loaded, walking up the directory tree picks the nearest `.php-version`; it overrides the global default. When you leave that tree (no `.php-version` above you), phpver switches back to the global default (`phpver use … -g`). A version message is printed **only when the active PHP version changes** (not on every `cd` in the same version). Commit `.php-version` so the team shares the same major/minor.
 
 Useful combo:
 
