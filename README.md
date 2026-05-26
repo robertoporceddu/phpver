@@ -13,6 +13,8 @@ Ideal for [Laravel](https://laravel.com) and everyday PHP development.
 | **zsh** + `~/.zshrc` | `cd` hooks, auto-activation of `.php-version` / `.php-extensions` |
 | **Xcode Command Line Tools** (PECL only) | `xcode-select --install` — needed to build extensions like imagick |
 
+**Recommended (avoid conflicts):** if you previously installed the Homebrew “default” PHP formula (`brew install php`), consider removing it (`brew uninstall php`) before using phpver, so `php` in your `PATH` is consistently managed via `php@X.Y` + phpver (prevents PATH clashes and stale dylib link errors after brew upgrades).
+
 Optional but recommended:
 
 - `brew install composer` for PHP / Laravel projects

@@ -33,6 +33,8 @@ type phpver          # shell function from .zshrc
 ~/.phpver/bin/phpver version
 ```
 
+**Recommendation (avoid conflicts):** before using phpver, prefer uninstalling any Homebrew-installed “default” PHP (`brew uninstall php`) so `php` in PATH is controlled by `php@X.Y` + phpver, avoiding PATH clashes and stale dylib link errors after brew upgrades.
+
 ## Diagnostic commands
 
 ```bash
