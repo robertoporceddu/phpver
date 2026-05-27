@@ -4,6 +4,10 @@ PHP version manager for **macOS**, inspired by [nvm](https://github.com/nvm-sh/n
 
 Ideal for [Laravel](https://laravel.com) and everyday PHP development.
 
+<p align="center">
+  <img src="demo.gif" alt="phpver demo" width="800">
+</p>
+
 ## Requirements
 
 | Requirement | Why |
