@@ -18,9 +18,7 @@ PHPVER_ROOT="${PHPVER_ROOT:-$HOME/.phpver}"
 ZSHRC="${ZSHRC:-$HOME/.zshrc}"
 MARKER="# phpver"
 SOURCE_LINE="export PHPVER_ROOT=\"\$HOME/.phpver\"
-[[ -f \"\$PHPVER_ROOT/lib/phpver.sh\" ]] && source \"\$PHPVER_ROOT/lib/phpver.sh\"
-# Bash CLI for commands (PECL); lib above keeps cd hooks for .php-version / .php-extensions
-phpver() { \"\$PHPVER_ROOT/bin/phpver\" \"\$@\"; }"
+[[ -f \"\$PHPVER_ROOT/lib/phpver.sh\" ]] && source \"\$PHPVER_ROOT/lib/phpver.sh\""
 
 [[ "$(uname -s)" == "Darwin" ]] || {
   printf 'phpver install: macOS only\n' >&2

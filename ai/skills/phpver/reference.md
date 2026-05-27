@@ -19,12 +19,11 @@ Expected `~/.zshrc` block (marker `# phpver`):
 ```bash
 export PHPVER_ROOT="$HOME/.phpver"
 [[ -f "$PHPVER_ROOT/lib/phpver.sh" ]] && source "$PHPVER_ROOT/lib/phpver.sh"
-phpver() { "$PHPVER_ROOT/bin/phpver" "$@"; }
 export PATH="$PHPVER_ROOT/bin:$PATH"
 ```
 
 - **Hooks** (`chpwd`, auto-activate): from sourced `lib/phpver.sh`
-- **CLI commands**: must go through `phpver()` wrapper → `bin/phpver` sets `PHPVER_NO_AUTO=1`
+- **CLI commands**: handled by the `phpver` shell function defined in `lib/phpver.sh`
 
 Verify:
 
@@ -82,5 +81,6 @@ export PECL_PHPBIN="$(brew --prefix php@8.4)/bin/php"
 | 0.1.9 | Fix version detection when PHP prints startup warnings |
 | 0.1.10 | `ext cleanup`; `get_loaded_extensions()` for `ext list`; ini cleanup on uninstall |
 | 0.2.1 | Auto-activate prints version only on switch; restores global when leaving `.php-version` tree |
+| 0.2.2 | Fix `phpver use` not updating current shell PATH by removing bash wrapper in `~/.zshrc` |
 
 Check installed: `phpver version` or `head -5 ~/.phpver/lib/phpver.sh | grep PHPVER_VERSION`.

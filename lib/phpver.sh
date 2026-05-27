@@ -2,7 +2,7 @@
 # phpver — PHP version manager for macOS (Homebrew bottles, no compile).
 # Sourced from zsh (.zshrc) and run via bash (bin/phpver); avoid bash-only regex captures.
 
-PHPVER_VERSION="0.2.1"
+PHPVER_VERSION="0.2.2"
 PHPVER_ROOT="${PHPVER_ROOT:-$HOME/.phpver}"
 PHPVER_VERSIONS_DIR="$PHPVER_ROOT/versions"
 PHPVER_DEFAULT_FILE="$PHPVER_ROOT/default"
